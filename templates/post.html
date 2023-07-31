@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+{% block title %}My Blog{% endblock %}
+
+
+{% block content %}
+        <!-- Page Header-->
+        <header class="masthead" style="background-image: url('{{ post.image_url }}')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="post-heading">
+                            <h1>{{ post.title }}</h1>
+                            <h2 class="subheading">{{ post.subtitle }}</h2>
+                            <span class="meta">
+                                Posted by
+                                <a href="#!">{{ post.poster.name }}</a>,
+                                {{ post.date }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Post Content-->
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <a href="{{ url_for('categories') }}" class="badge badge-info">{{ post.tag }}</a>
+                        <p>{{ post.body | safe }}
+                        </p>
+
+{% if not is_favorited %}
+    <!-- Icon for not favorited state -->
+    <a class="btn btn-danger" href="{{ url_for('toggle_favorite', post_id=post.id) }}">
+    </a>
+{% else %}
+    <!-- Icon for favorited state -->
+    <a class="btn btn-secondary" href="{{ url_for('toggle_favorite', post_id=post.id) }}">
+
+    </a>
+{% endif %}
+
+
+
+                    </div>
+
+                    {% if current_user.is_authenticated: %}
+
+                    {% if current_user.id == post.poster.id %}
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-primary text-uppercase mx-2"
+                           href="{{ url_for('edit_post', post_id=post.id) }}">Edit this article
+                        </a>
+                        <a class="btn btn-primary text-uppercase"
+                           href="{{ url_for('delete_post', post_id=post.id) }}">Delete this article
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+
+
+
+
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10 comment">
+                    {% if not current_user.is_authenticated: %}
+                    <h3>Please, log in to see the comments and join the discussion!</h3>
+
+                    {% else %}
+
+                    <h3>Write your comment here:</h3>
+
+                    {{ ckeditor.load() }}
+                    {{ ckeditor.config(name='comment_text') }}
+                    {{ render_form(form) }}
+ <br><br>
+
+                    {% for comment in post.comments %}
+                        <div class="commentList">
+                            <hr>
+                                <div class="avatar-img">
+                                   <img src="{{ gravatar(comment.comment_author.email, size=80) }}" alt="Gravatar"/>
+                                </div>
+                                <div class="commentText">
+                                    {{ comment.text | safe }}
+                                    <span class="date sub-text mb-5"><em>comment left by <strong>{{ comment.comment_author.name }}</strong></em></span>
+                                    <hr>
+                                    {% if comment.comment_author_id == current_user.id or current_user.id == 1: %}
+                                        <a href="{{url_for('delete_comment', comment_id=comment.id, post_id=post.id)}}" style="color: red">Delete Comment</a>
+                                    {% endif %}
+                                </div>
+                    {% endfor %}
+                </div>
+                    {% endif %}
+{% endblock %}

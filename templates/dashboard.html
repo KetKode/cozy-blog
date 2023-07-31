@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Page Header -->
+  <header class="masthead" style="background-image: url('{{ url_for('static', filename='/assets/img/dashboard.jpg')}}')">
+    <div class="container position-relative px-4 px-lg-5">
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+          <div class="page-heading">
+            <h1>Welcome, {{ current_user.name }}!</h1>
+            <span class="subheading">glad to see you!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+<div class="container">
+     <div class="row">
+         <div class="col col d-flex flex-column align-items-center">
+    <img class="avatar-img mx-auto" src="{{ gravatar(current_user.email, size=80) }}" alt="Gravatar"/>
+    <h4>{{ current_user.name }}</h4>
+</div>
+      <div class="col">
+        <h4>You've liked these posts:</h4>
+          {% if not favorites %}
+          <p><em>Nothing here yet.</em></p>
+          {% else %}
+          {% for favorite in favorites %}
+              ❤️ <strong><a href="{{ url_for('show_post', post_id=favorite.post.id) }}">{{ favorite.post.title }}</a></strong><br>
+              <a href="#" class="badge badge-info">{{ favorite.post.tag }}</a><br>
+              {% endfor %}
+          {% endif %}
+</div>
+         <div class="col mb-5">
+        <h4>You've written these posts:</h4>
+               {% if not user.posts %}
+                      <p><em>Nothing here yet.</em></p>
+             <a class="btn btn-primary text-uppercase mb-5" href="{{ url_for('make_post') }}">Make a new post</a>
+
+            {% else %}
+              {% for post in user.posts %}
+              ✏️ <strong><a href="{{ url_for('show_post', post_id=post.id) }}">{{ post.title }}</a></strong><br>
+              <a href="{{ url_for('categories') }}" class="badge badge-info">{{ post.tag }}</a><br>
+              {% endfor %}
+            {% endif %}
+</div>
+</div>
+    <hr>
+
+<div class="container px-4 px-lg-5 mb-5 mt-5">
+    <h4>Check out these posts as well:</h4>
+</div>
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        {% for post in random_posts_to_read %}
+        <div class="col-md-6 justify-content-center">
+            <!-- Post preview-->
+
+            <div class="image-preview justify-content-center">
+                <div class="image-container">
+                <img src="{{ post.image_url }}" alt="Article Image" class="img-fluid post-image">
+            </div>
+            </div>
+
+            <div class="post-preview mb-5 mt-5">
+                <a href="{{ url_for('show_post', post_id=post.id) }}">
+                    <div class="post-title-container">
+                        <h2 class="post-title">{{ post.title }}</h2>
+                    </div>
+                    <h3 class="post-subtitle">{{ post.subtitle }}</h3>
+                </a>
+                <a href="{{ url_for('categories') }}" class="badge badge-info">{{ post.tag }}</a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+{% endblock %}

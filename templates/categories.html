@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('{{ url_for('static', filename='/assets/img/categories.jpg')}}')">
+    <div class="container position-relative px-4 px-lg-5">
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+          <div class="page-heading">
+            <h1>Categories</h1>
+            <span class="subheading">choose what you like</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center mb-3">
+        {% for tag in tags %}
+        <h2>{{ tag }}</h2>
+    </div>
+</div>
+
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        {% for post in posts %}
+        {% if post.tag == tag %}
+        <div class="col-md-6 justify-content-center">
+            <!-- Post preview-->
+
+            <div class="image-preview justify-content-center">
+                <div class="image-container">
+                <img src="{{ post.image_url }}" alt="Article Image" class="img-fluid post-image">
+            </div>
+            </div>
+
+            <div class="post-preview">
+                <a href="{{ url_for('show_post', post_id=post.id) }}">
+                    <div class="post-title-container">
+                        <h2 class="post-title">{{ post.title }}</h2>
+                    </div>
+                    <h3 class="post-subtitle">{{ post.subtitle }}</h3>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}
