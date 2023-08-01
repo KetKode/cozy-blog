@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from posts import posts
 from flask_ckeditor import CKEditor
@@ -139,14 +139,15 @@ def toggle_favorite(post_id):
         db.session.commit()
         flash("Post is removed from your favourites!")
         is_favorited = False
-
     else:
         favorite = Favorite(user_id=current_user.id, post_id=post_id)
         db.session.add(favorite)
         db.session.commit()
         flash("Post is added to your favourites.")
         is_favorited = True
-    return redirect(url_for('show_post', post_id=post_id, is_favorited=is_favorited))
+
+    session['is_favorited'] = is_favorited
+    return redirect(url_for('show_post', post_id=post_id))
 
 
 @app.route("/register", methods=['GET', 'POST'])

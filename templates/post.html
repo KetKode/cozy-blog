@@ -31,14 +31,13 @@
                         <p>{{ post.body | safe }}
                         </p>
 
-{% if not is_favorited %}
+{% if not session.get('is_favorited', False) %}
     <!-- Icon for not favorited state -->
-    <a class="btn btn-danger" href="{{ url_for('toggle_favorite', post_id=post.id) }}">
+    <a href="{{ url_for('toggle_favorite', post_id=post.id) }}">❤️&#20;<em>like the post</em>
     </a>
 {% else %}
     <!-- Icon for favorited state -->
-    <a class="btn btn-secondary" href="{{ url_for('toggle_favorite', post_id=post.id) }}">
-
+    <a href="{{ url_for('toggle_favorite', post_id=post.id) }}">💔&#20;<em>unlike the post</em>
     </a>
 {% endif %}
 
